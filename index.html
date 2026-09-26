@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/logo.png?v=2">
+    <link rel="shortcut icon" type="image/png" href="/logo.png?v=2">
+    <link rel="apple-touch-icon" href="/logo.png?v=2">
+    <title>Lumbung Edukatif - Satu Lumbung, Beragam Media Pembelajaran</title>
+    
+    <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            300: '#fda4af',
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                        },
+                        pastel: {
+                            pink: '#fce7f3',
+                            rose: '#fbcfe8',
+                            cream: '#fffbeb',
+                            peach: '#ffedd5',
+                            mint: '#e0f2fe',
+                            purple: '#f3e8ff'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Doodle SVG Background Pattern for SD Education Theme */
+        body {
+            background-color: #fff5f7;
+            background-image: radial-gradient(#f472b6 0.75px, transparent 0.75px), radial-gradient(#f472b6 0.75px, #fff5f7 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .doodle-overlay {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f472b6' fill-opacity='0.08'%3E%3Cpath d='M11 18l4-4 4 4-4 4zM35 80l3-3 3 3-3 3zM85 25l3-3 3 3-3 3z'/%3E%3Ccircle cx='70' cy='70' r='5'/%3E%3Ccircle cx='20' cy='50' r='4'/%3E%3Cpath d='M80 50h10v2H80zM15 80h8v2h-8z'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(251, 207, 232, 0.8);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fce7f3;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f472b6;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e11d48;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 doodle-overlay flex flex-col justify-between">
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-pink-200 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo & Brand -->
+                <a href="#" onclick="showSection('home')" class="flex items-center gap-3 group">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-500 to-rose-400 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-book-bookmark text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-pink-600 via-rose-500 to-pink-700 bg-clip-text text-transparent block">LUMBUNG EDUKATIF</span>
+                        <span class="text-[11px] font-medium text-pink-500 block -mt-1 hidden sm:block">PGSD UNWIDHA KLATEN</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Menu Nav -->
+                <nav class="hidden lg:flex items-center space-x-1 text-sm font-semibold">
+                    <button onclick="showSection('home')" class="px-3 py-2 text-slate-700 hover:text-pink-600 rounded-xl hover:bg-pink-50 transition">Beranda</button>
+                    <button onclick="filterByCategory('Modul Ajar')" class="px-3 py-2 text-slate-700 hover:text-pink-600 rounded-xl hover:bg-pink-50 transition">Modul Ajar</button>
+                    <button onclick="filterByCategory('PPT Interaktif')" class="px-3 py-2 text-slate-700 hover:text-pink-600 rounded-xl hover:bg-pink-50 transition">PPT Interaktif</button>
+                    <button onclick="filterByCategory('Aktivitas Pembelajaran')" class="px-3 py-2 text-slate-700 hover:text-pink-600 rounded-xl hover:bg-pink-50 transition">Aktivitas</button>
+                    <button onclick="filterByCategory('Ide Permainan Edukatif')" class="px-3 py-2 text-slate-700 hover:text-pink-600 rounded-xl hover:bg-pink-50 transition">Permainan</button>
+                    <button onclick="filterByCategory('Lain-Lain')" class="px-3 py-2 text-slate-700 hover:text-pink-600 rounded-xl hover:bg-pink-50 transition">Lain-Lain</button>
+                    <button onclick="showSection('tentang')" class="px-3 py-2 text-slate-700 hover:text-pink-600 rounded-xl hover:bg-pink-50 transition">Tentang</button>
+                </nav>
+
+                <!-- Actions & Auth Button -->
+                <div class="hidden sm:flex items-center gap-2">
+                    <button id="auth-btn" onclick="toggleAuthModal()" class="px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-lock"></i>
+                        <span id="auth-btn-text">LOGIN EDITOR</span>
+                    </button>
+                </div>
+
+                <!-- Hamburger Button -->
+                <div class="lg:hidden flex items-center gap-2">
+                    <button onclick="toggleMobileMenu()" class="p-2.5 rounded-xl text-pink-600 hover:bg-pink-100 focus:outline-none">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white/95 border-b border-pink-200 px-4 pt-2 pb-6 space-y-2 text-sm font-semibold shadow-lg">
+            <button onclick="showSection('home'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 text-slate-700 rounded-lg hover:bg-pink-50">Beranda</button>
+            <button onclick="filterByCategory('Modul Ajar'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 text-slate-700 rounded-lg hover:bg-pink-50">📚 Modul Ajar</button>
+            <button onclick="filterByCategory('PPT Interaktif'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 text-slate-700 rounded-lg hover:bg-pink-50">🖥️ PPT Interaktif</button>
+            <button onclick="filterByCategory('Aktivitas Pembelajaran'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 text-slate-700 rounded-lg hover:bg-pink-50">🎯 Aktivitas Pembelajaran</button>
+            <button onclick="filterByCategory('Ide Permainan Edukatif'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 text-slate-700 rounded-lg hover:bg-pink-50">🎮 Permainan Edukatif</button>
+            <button onclick="filterByCategory('Lain-Lain'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 text-slate-700 rounded-lg hover:bg-pink-50">📂 Lain-Lain</button>
+            <button onclick="showSection('tentang'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 text-slate-700 rounded-lg hover:bg-pink-50">ℹ️ Tentang Us</button>
+            <div class="pt-2 border-t border-pink-100 flex flex-col gap-2">
+                <button onclick="toggleAuthModal(); toggleMobileMenu();" id="mobile-auth-btn" class="w-full py-2.5 text-center text-sm font-bold text-white bg-pink-500 rounded-xl shadow">
+                    🔐 LOGIN EDITOR
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        
+        <!-- SECTION: HOME PAGE -->
+        <section id="sec-home" class="space-y-12 pb-16">
+            
+            <!-- HERO SECTION -->
+            <div class="relative overflow-hidden bg-gradient-to-b from-pink-100/80 via-pink-50/50 to-transparent py-12 lg:py-20 border-b border-pink-200/50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                        
+                        <!-- Hero Text -->
+                        <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-pink-200 text-pink-600 text-xs sm:text-sm font-bold shadow-sm">
+                                <span class="flex h-2 w-2 rounded-full bg-pink-500 animate-ping"></span>
+                                Karya PPG Calon Guru Gel. 1 - 2026 PGSD UNWIDHA
+                            </div>
+                            
+                            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-800 leading-tight tracking-tight">
+                                LUMBUNG EDUKATIF
+                            </h1>
+                            <p class="text-lg sm:text-2xl font-semibold text-pink-600 italic">
+                                “Satu Lumbung, Beragam Media Pembelajaran”
+                            </p>
+                            
+                            <p class="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                                Temukan, gunakan, dan bagikan berbagai media pembelajaran interaktif untuk menciptakan pengalaman belajar SD yang lebih kreatif, inovatif, dan menyenangkan!
+                            </p>
+
+                            <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                                <a href="#explore" class="px-7 py-3.5 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold text-base shadow-lg shadow-pink-500/20 hover:scale-105 transition-all flex items-center gap-2">
+                                    <i class="fa-solid fa-compass"></i> JELAJAHI MEDIA
+                                </a>
+                                <button onclick="showSection('tentang')" class="px-7 py-3.5 rounded-2xl bg-white hover:bg-pink-50 text-pink-600 border-2 border-pink-300 font-bold text-base shadow-sm hover:scale-105 transition-all flex items-center gap-2">
+                                    <i class="fa-solid fa-circle-info"></i> TENTANG KAMI
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Hero Graphic Illustration -->
+                        <div class="lg:col-span-5 flex justify-center">
+                            <div class="relative w-full max-w-md">
+                                <div class="absolute -top-6 -left-6 w-24 h-24 bg-pink-300/40 rounded-full blur-xl"></div>
+                                <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-rose-400/30 rounded-full blur-2xl"></div>
+                                
+                                <div class="glass-card p-6 sm:p-8 rounded-3xl shadow-xl border border-pink-200 relative text-center space-y-4">
+                                    <div class="w-24 h-24 mx-auto rounded-3xl bg-pink-100 border-2 border-pink-300 flex items-center justify-center text-pink-500 text-4xl shadow-inner">
+                                        <i class="fa-solid fa-chalkboard-user"></i>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <h3 class="font-bold text-slate-800 text-lg">Ruang Berbagi Guru SD</h3>
+                                        <p class="text-xs text-slate-500">Akses ratusan perangkat ajar siap pakai untuk kelas I-VI</p>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-2 pt-2 text-center text-xs font-semibold">
+                                        <div class="p-2 bg-pink-50 rounded-xl border border-pink-100">
+                                            <span id="hero-stat-total" class="block font-black text-pink-600 text-lg">0</span>
+                                            <span class="text-[10px] text-slate-500">Media</span>
+                                        </div>
+                                        <div class="p-2 bg-rose-50 rounded-xl border border-rose-100">
+                                            <span id="hero-stat-downloads" class="block font-black text-rose-600 text-lg">0</span>
+                                            <span class="text-[10px] text-slate-500">Unduhan</span>
+                                        </div>
+                                        <div class="p-2 bg-amber-50 rounded-xl border border-amber-100">
+                                            <span class="block font-black text-amber-600 text-lg">100%</span>
+                                            <span class="text-[10px] text-slate-500">Gratis</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5 KATEGORI UTAMA -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center space-y-2 mb-8">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">5 Kategori Utama Media</h2>
+                    <p class="text-slate-600 text-sm">Pilih kelompok media pembelajaran yang Anda butuhkan</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    
+                    <!-- Kategori 1 -->
+                    <div onclick="filterByCategory('Modul Ajar')" class="glass-card p-5 rounded-2xl cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-300 group border-l-4 border-pink-500">
+                        <div class="w-12 h-12 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition-transform">
+                            📚
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base group-hover:text-pink-600 transition">Modul Ajar</h3>
+                        <p class="text-xs text-slate-500 mt-1 line-clamp-2">Modul Ajar, RPP, LKPD, Perangkat Ajar Word & PDF.</p>
+                    </div>
+
+                    <!-- Kategori 2 -->
+                    <div onclick="filterByCategory('PPT Interaktif')" class="glass-card p-5 rounded-2xl cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-300 group border-l-4 border-rose-500">
+                        <div class="w-12 h-12 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition-transform">
+                            🖥️
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base group-hover:text-rose-600 transition">PPT Interaktif</h3>
+                        <p class="text-xs text-slate-500 mt-1 line-clamp-2">PowerPoint Animasi, Presentasi & Kuis Interaktif.</p>
+                    </div>
+
+                    <!-- Kategori 3 -->
+                    <div onclick="filterByCategory('Aktivitas Pembelajaran')" class="glass-card p-5 rounded-2xl cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-300 group border-l-4 border-purple-500">
+                        <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition-transform">
+                            🎯
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base group-hover:text-purple-600 transition">Aktivitas</h3>
+                        <p class="text-xs text-slate-500 mt-1 line-clamp-2">Aktivitas Kelompok, Ice Breaking, Worksheet, Literasi-Numerasi.</p>
+                    </div>
+
+                    <!-- Kategori 4 -->
+                    <div onclick="filterByCategory('Ide Permainan Edukatif')" class="glass-card p-5 rounded-2xl cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-300 group border-l-4 border-amber-500">
+                        <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition-transform">
+                            🎮
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base group-hover:text-amber-600 transition">Ide Permainan</h3>
+                        <p class="text-xs text-slate-500 mt-1 line-clamp-2">Game Edukasi, Kartu Belajar, Board Game SD.</p>
+                    </div>
+
+                    <!-- Kategori 5 -->
+                    <div onclick="filterByCategory('Lain-Lain')" class="glass-card p-5 rounded-2xl cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-300 group border-l-4 border-teal-500">
+                        <div class="w-12 h-12 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center text-2xl mb-3 group-hover:scale-110 transition-transform">
+                            📂
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base group-hover:text-teal-600 transition">Lain-Lain</h3>
+                        <p class="text-xs text-slate-500 mt-1 line-clamp-2">Link Drive, Canva, YouTube, Video, ZIP, Spreadsheet.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- EXPLORER & SEARCH SECTION -->
+            <div id="explore" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+                <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl border border-pink-200 space-y-6">
+                    
+                    <!-- Search Bar Section -->
+                    <div class="relative max-w-3xl mx-auto">
+                        <div class="relative flex items-center">
+                            <input type="text" id="search-input" onkeyup="handleSearchInput(event)" placeholder="Cari media pembelajaran (mis: Modul Matematika Kelas 4, PPT IPAS...)" class="w-full pl-12 pr-28 py-4 bg-white rounded-2xl border-2 border-pink-200 focus:border-pink-500 focus:ring-4 focus:ring-pink-100 text-slate-800 font-medium text-sm sm:text-base transition shadow-sm outline-none">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 text-pink-400 text-lg"></i>
+                            <button onclick="applyFilters()" class="absolute right-2.5 px-5 py-2.5 bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-xl text-xs sm:text-sm shadow transition">
+                                CARI
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filter Controls Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-2">
+                        
+                        <!-- Filter Kategori -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Kategori</label>
+                            <select id="filter-category" onchange="applyFilters()" class="w-full px-3 py-2 bg-white rounded-xl border border-pink-200 text-xs font-semibold text-slate-700 focus:border-pink-500 outline-none">
+                                <option value="ALL">Semua Kategori</option>
+                                <option value="Modul Ajar">📚 Modul Ajar</option>
+                                <option value="PPT Interaktif">🖥️ PPT Interaktif</option>
+                                <option value="Aktivitas Pembelajaran">🎯 Aktivitas</option>
+                                <option value="Ide Permainan Edukatif">🎮 Permainan</option>
+                                <option value="Lain-Lain">📂 Lain-Lain</option>
+                            </select>
+                        </div>
+
+                        <!-- Filter Jenjang -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Jenjang</label>
+                            <select id="filter-level" onchange="applyFilters()" class="w-full px-3 py-2 bg-white rounded-xl border border-pink-200 text-xs font-semibold text-slate-700 focus:border-pink-500 outline-none">
+                                <option value="ALL">Semua Jenjang</option>
+                                <option value="SD">SD / MI</option>
+                                <option value="Umum">Umum / Guru</option>
+                            </select>
+                        </div>
+
+                        <!-- Filter Kelas -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Kelas</label>
+                            <select id="filter-grade" onchange="applyFilters()" class="w-full px-3 py-2 bg-white rounded-xl border border-pink-200 text-xs font-semibold text-slate-700 focus:border-pink-500 outline-none">
+                                <option value="ALL">Semua Kelas</option>
+                                <option value="I">Kelas 1 (I)</option>
+                                <option value="II">Kelas 2 (II)</option>
+                                <option value="III">Kelas 3 (III)</option>
+                                <option value="IV">Kelas 4 (IV)</option>
+                                <option value="V">Kelas 5 (V)</option>
+                                <option value="VI">Kelas 6 (VI)</option>
+                                <option value="Umum">Semua Kelas</option>
+                            </select>
+                        </div>
+
+                        <!-- Filter Mapel -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Mata Pelajaran</label>
+                            <select id="filter-subject" onchange="applyFilters()" class="w-full px-3 py-2 bg-white rounded-xl border border-pink-200 text-xs font-semibold text-slate-700 focus:border-pink-500 outline-none">
+                                <option value="ALL">Semua Mapel</option>
+                                <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                                <option value="Matematika">Matematika</option>
+                                <option value="IPAS">IPAS</option>
+                                <option value="Pendidikan Pancasila">Pancasila</option>
+                                <option value="Seni">Seni & Budaya</option>
+                                <option value="PJOK">PJOK</option>
+                                <option value="Bahasa Inggris">Bahasa Inggris</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+
+                        <!-- Filter Tipe File -->
+                        <div class="col-span-2 sm:col-span-1">
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Tipe File</label>
+                            <select id="filter-type" onchange="applyFilters()" class="w-full px-3 py-2 bg-white rounded-xl border border-pink-200 text-xs font-semibold text-slate-700 focus:border-pink-500 outline-none">
+                                <option value="ALL">Semua Format</option>
+                                <option value="PDF">PDF Document</option>
+                                <option value="DOCX">Word (DOCX)</option>
+                                <option value="PPTX">PowerPoint (PPTX)</option>
+                                <option value="XLSX">Excel (XLSX)</option>
+                                <option value="IMAGE">Gambar (PNG/JPG)</option>
+                                <option value="VIDEO">Video (MP4)</option>
+                                <option value="ZIP">ZIP Archive</option>
+                                <option value="LINK">Tautan (LINK)</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <!-- Toolbar Result Bar & Sorting -->
+                    <div class="flex flex-col sm:flex-row items-center justify-between pt-4 border-t border-pink-100 gap-3">
+                        <div class="text-xs font-semibold text-slate-600">
+                            Menampilkan <span id="results-count" class="font-bold text-pink-600">0</span> media pembelajaran
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <label class="text-xs font-bold text-slate-600">Urutkan:</label>
+                            <select id="sort-order" onchange="applyFilters()" class="px-3 py-1.5 bg-white rounded-xl border border-pink-200 text-xs font-semibold text-slate-700 focus:border-pink-500 outline-none">
+                                <option value="newest">Terbaru</option>
+                                <option value="oldest">Terlama</option>
+                                <option value="downloads">Paling Banyak Diunduh</option>
+                                <option value="az">Nama (A-Z)</option>
+                                <option value="za">Nama (Z-A)</option>
+                            </select>
+                            
+                            <button onclick="resetFilters()" class="px-2.5 py-1.5 text-xs font-bold text-pink-600 hover:bg-pink-100 rounded-lg transition" title="Reset Filters">
+                                <i class="fa-solid fa-rotate-left"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- MEDIA CARDS GRID -->
+                <div id="media-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                    <!-- Cards will be populated dynamically -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-state" class="hidden text-center py-16 bg-white/60 rounded-3xl border border-pink-200 my-8">
+                    <div class="w-20 h-20 mx-auto rounded-full bg-pink-100 flex items-center justify-center text-pink-500 text-3xl mb-3">
+                        <i class="fa-solid fa-folder-open"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-700">Media Tidak Ditemukan</h3>
+                    <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Coba gunakan kata kunci lain atau ubah kombinasi filter pencarian Anda.</p>
+                    <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-pink-500 text-white rounded-xl text-xs font-bold shadow hover:bg-pink-600 transition">Reset Filter</button>
+                </div>
+
+                <!-- PAGINATION CONTROLS -->
+                <div id="pagination-controls" class="flex justify-center items-center gap-2 mt-8">
+                    <!-- Dynamic Pagination -->
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- SECTION: ADMIN DASHBOARD (EDITOR ONLY) -->
+        <section id="sec-admin" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+            
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-gradient-to-r from-pink-600 to-rose-600 text-white p-6 sm:p-8 rounded-3xl shadow-xl">
+                <div>
+                    <span class="text-xs font-bold tracking-wider text-pink-200 uppercase">DASHBOARD EDITOR</span>
+                    <h2 class="text-2xl sm:text-3xl font-black">Panel Kelola Media Ajar</h2>
+                    <p class="text-xs sm:text-sm text-pink-100 mt-1">Sistem manajemen file, statistik, & upload batch Lumbung Edukatif.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="openUploadModal()" class="px-5 py-3 bg-white text-pink-600 rounded-2xl font-bold text-sm shadow-md hover:bg-pink-50 transition flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> UPLOAD MEDIA BARU
+                    </button>
+                    <button onclick="logoutEditor()" class="px-4 py-3 bg-rose-700/80 hover:bg-rose-800 text-white rounded-2xl font-bold text-sm transition">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STATISTIC CARDS -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+                <div class="glass-card p-4 rounded-2xl text-center border-b-4 border-slate-700">
+                    <span class="block text-2xl font-black text-slate-800" id="stat-total">0</span>
+                    <span class="text-[11px] font-bold text-slate-500 uppercase">Total Media</span>
+                </div>
+                <div class="glass-card p-4 rounded-2xl text-center border-b-4 border-pink-500">
+                    <span class="block text-2xl font-black text-pink-600" id="stat-modul">0</span>
+                    <span class="text-[11px] font-bold text-slate-500 uppercase">Modul Ajar</span>
+                </div>
+                <div class="glass-card p-4 rounded-2xl text-center border-b-4 border-rose-500">
+                    <span class="block text-2xl font-black text-rose-600" id="stat-ppt">0</span>
+                    <span class="text-[11px] font-bold text-slate-500 uppercase">PPT Interaktif</span>
+                </div>
+                <div class="glass-card p-4 rounded-2xl text-center border-b-4 border-purple-500">
+                    <span class="block text-2xl font-black text-purple-600" id="stat-aktivitas">0</span>
+                    <span class="text-[11px] font-bold text-slate-500 uppercase">Aktivitas</span>
+                </div>
+                <div class="glass-card p-4 rounded-2xl text-center border-b-4 border-amber-500">
+                    <span class="block text-2xl font-black text-amber-600" id="stat-game">0</span>
+                    <span class="text-[11px] font-bold text-slate-500 uppercase">Permainan</span>
+                </div>
+                <div class="glass-card p-4 rounded-2xl text-center border-b-4 border-teal-500">
+                    <span class="block text-2xl font-black text-teal-600" id="stat-lain">0</span>
+                    <span class="text-[11px] font-bold text-slate-500 uppercase">Lain-Lain</span>
+                </div>
+                <div class="glass-card p-4 rounded-2xl text-center border-b-4 border-emerald-500 col-span-2 sm:col-span-1">
+                    <span class="block text-2xl font-black text-emerald-600" id="stat-downloads">0</span>
+                    <span class="text-[11px] font-bold text-slate-500 uppercase">Total Unduhan</span>
+                </div>
+            </div>
+
+            <!-- ADMIN MEDIA MANAGEMENT TABLE -->
+            <div class="glass-card rounded-3xl p-6 shadow-xl border border-pink-200 space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <h3 class="font-bold text-lg text-slate-800">Daftar Semua Media dalam Database</h3>
+                    <input type="text" id="admin-search" oninput="renderAdminTable()" placeholder="Cari di tabel admin..." class="px-3.5 py-2 rounded-xl border border-pink-200 text-xs font-medium focus:outline-pink-500 w-full sm:w-64">
+                </div>
+
+                <div class="overflow-x-auto rounded-2xl border border-pink-100">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-pink-100/70 text-slate-700 font-bold uppercase tracking-wider">
+                                <th class="p-3">Info Media</th>
+                                <th class="p-3">Kategori</th>
+                                <th class="p-3">Mapel / Kelas</th>
+                                <th class="p-3">Tipe</th>
+                                <th class="p-3 text-center">Download</th>
+                                <th class="p-3 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body" class="divide-y divide-pink-100 bg-white">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- SECTION: TENTANG (ABOUT) -->
+        <section id="sec-tentang" class="hidden max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="glass-card rounded-3xl p-8 sm:p-12 shadow-xl border border-pink-200 space-y-8">
+                
+                <div class="text-center space-y-3">
+                    <div class="w-20 h-20 mx-auto rounded-3xl bg-pink-500 text-white flex items-center justify-center text-3xl shadow-lg">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <h1 class="text-3xl font-extrabold text-slate-800">Tentang Lumbung Edukatif</h1>
+                    <p class="text-pink-600 font-semibold text-lg">“Satu Lumbung, Beragam Media Pembelajaran”</p>
+                </div>
+
+                <div class="prose max-w-none text-slate-700 leading-relaxed text-sm sm:text-base space-y-4 bg-white/80 p-6 rounded-2xl border border-pink-100">
+                    <p>
+                        <strong>Lumbung Edukatif</strong> merupakan ruang penyimpanan dan berbagi media pembelajaran interaktif yang diprakarsai dan dikembangkan oleh <strong>Mahasiswa PPG Calon Guru Gelombang 1 Tahun 2026 Program Studi PGSD Universitas Widya Dharma Klaten (UNWIDHA)</strong>.
+                    </p>
+                    <p>
+                        Website ini dibuat dengan tujuan mulia untuk memfasilitasi para guru Sekolah Dasar (SD), mahasiswa pendidikan, siswa, serta masyarakat luas dalam mengakses, mengunduh, dan membagikan berbagai sumber daya belajar berkualitas secara mudah, cepat, dan gratis.
+                    </p>
+                    <div class="p-4 bg-pink-50 rounded-xl border-l-4 border-pink-500 text-pink-900 font-medium italic my-4">
+                        “Semoga media yang tersedia di Lumbung Edukatif dapat memberikan manfaat nyata, menginspirasi proses pembelajaran di kelas, serta mendorong terciptanya suasana belajar yang aktif, kreatif, dan menyenangkan bagi anak-anak Indonesia.”
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                    <div class="p-5 bg-white rounded-2xl border border-pink-100 shadow-sm">
+                        <i class="fa-solid fa-book-open-reader text-2xl text-pink-500 mb-2"></i>
+                        <h4 class="font-bold text-slate-800 text-sm">Gratis & Terbuka</h4>
+                        <p class="text-xs text-slate-500 mt-1">Dapat diakses oleh siapa saja tanpa dipungut biaya.</p>
+                    </div>
+                    <div class="p-5 bg-white rounded-2xl border border-pink-100 shadow-sm">
+                        <i class="fa-solid fa-layer-group text-2xl text-pink-500 mb-2"></i>
+                        <h4 class="font-bold text-slate-800 text-sm">Beragam Format</h4>
+                        <p class="text-xs text-slate-500 mt-1">Mendukung PDF, Word, PPT, Gambar, Video, hingga link interaktif.</p>
+                    </div>
+                    <div class="p-5 bg-white rounded-2xl border border-pink-100 shadow-sm">
+                        <i class="fa-solid fa-handshake-angle text-2xl text-pink-500 mb-2"></i>
+                        <h4 class="font-bold text-slate-800 text-sm">Semangat Kolaborasi</h4>
+                        <p class="text-xs text-slate-500 mt-1">Wujud bakti PPG PGSD UNWIDHA 2026 untuk dunia pendidikan.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white/90 border-t border-pink-200 mt-16 pt-12 pb-8 text-slate-600 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                
+                <div class="space-y-3 md:col-span-2">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-xl bg-pink-500 text-white flex items-center justify-center font-bold text-sm">
+                            <i class="fa-solid fa-book-bookmark"></i>
+                        </div>
+                        <span class="font-black text-slate-800 text-lg">LUMBUNG EDUKATIF</span>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed max-w-md">
+                        Platform repositori media pembelajaran Sekolah Dasar karya Mahasiswa PPG Calon Guru Gelombang 1 Tahun 2026 Prodi PGSD Universitas Widya Dharma Klaten.
+                    </p>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Navigasi Utama</h4>
+                    <ul class="space-y-1.5 text-xs">
+                        <li><a href="#" onclick="showSection('home')" class="hover:text-pink-600">Beranda</a></li>
+                        <li><a href="#" onclick="filterByCategory('Modul Ajar')" class="hover:text-pink-600">Modul Ajar</a></li>
+                        <li><a href="#" onclick="filterByCategory('PPT Interaktif')" class="hover:text-pink-600">PPT Interaktif</a></li>
+                        <li><a href="#" onclick="filterByCategory('Aktivitas Pembelajaran')" class="hover:text-pink-600">Aktivitas Pembelajaran</a></li>
+                        <li><a href="#" onclick="filterByCategory('Ide Permainan Edukatif')" class="hover:text-pink-600">Ide Permainan</a></li>
+                        <li><a href="#" onclick="filterByCategory('Lain-Lain')" class="hover:text-pink-600">Lain-Lain</a></li>
+                    </ul>
+                </div>
+
+                <div id="hubungi-kami" class="space-y-2">
+                    <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Hubungi Kami</h4>
+                    <address class="not-italic space-y-2 text-xs">
+                        <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=peserta.38239%40ppg.belajar.id" onclick="openGmailApp(event)" target="_blank" rel="noopener noreferrer" class="flex items-start gap-2 hover:text-pink-600 transition-colors">
+                            <i class="fa-solid fa-envelope mt-0.5 text-pink-500"></i>
+                            <span class="break-all">peserta.38239@ppg.belajar.id</span>
+                        </a>
+                        <a href="https://wa.me/6282321609434" target="_blank" rel="noopener noreferrer" class="flex items-start gap-2 hover:text-pink-600 transition-colors">
+                            <i class="fa-brands fa-whatsapp mt-0.5 text-emerald-500"></i>
+                            <span>
+                                +62 823-2160-9434
+                                <small class="block mt-0.5 text-[10px] text-slate-500">Jam kerja: 08.00 - 17.00 WIB</small>
+                            </span>
+                        </a>
+                    </address>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider">Editor & Portal</h4>
+                    <ul class="space-y-1.5 text-xs">
+                        <li><a href="#" onclick="showSection('tentang')" class="hover:text-pink-600">Tentang Us</a></li>
+                        <li><a href="#" onclick="toggleAuthModal()" class="hover:text-pink-600">Login Editor Dashboard</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="pt-6 border-t border-pink-100 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+                <p>© 2026 Lumbung Edukatif - PGSD UNWIDHA Klaten. All Rights Reserved.</p>
+                <p>Dikembangkan untuk Pendidik & Generasi Emas Indonesia.</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- MODAL 1: MEDIA DETAIL & PREVIEW -->
+    <div id="modal-detail" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="glass-card bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto border border-pink-200 relative">
+            <button onclick="closeDetailModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div id="detail-content" class="space-y-6">
+                <!-- Content injected dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: LOGIN EDITOR -->
+    <div id="modal-auth" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="glass-card bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-pink-200 space-y-6 relative">
+            <button onclick="toggleAuthModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center space-y-2">
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-pink-100 text-pink-600 flex items-center justify-center text-2xl font-bold">
+                    🔐
+                </div>
+                <h3 class="text-xl font-extrabold text-slate-800">Login Editor</h3>
+                <p class="text-xs text-slate-500">Masuk untuk mengelola, upload, edit & hapus media</p>
+            </div>
+
+            <form id="auth-form" onsubmit="handleLogin(event)" class="space-y-4 text-xs font-semibold">
+                <div>
+                    <label class="block text-slate-700 mb-1">Username / Email</label>
+                    <input type="text" id="auth-user" value="editor" required class="w-full px-4 py-3 rounded-xl border border-pink-200 focus:border-pink-500 outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-slate-700 mb-1">Password Editor</label>
+                    <input type="password" id="auth-pass" required autocomplete="current-password" class="w-full px-4 py-3 rounded-xl border border-pink-200 focus:border-pink-500 outline-none text-sm">
+                    <p class="text-[10px] text-pink-500 mt-1">Gunakan username dan password editor yang terdaftar.</p>
+                </div>
+
+                <div id="auth-error" class="hidden p-3 bg-rose-50 text-rose-600 rounded-xl text-xs font-medium"></div>
+
+                <button type="submit" class="w-full py-3 bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-xl shadow transition">
+                    MASUK EDITOR
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: UPLOAD & MULTIPLE FILE / LINK CRUD -->
+    <div id="modal-upload" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="glass-card bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-pink-200 space-y-6 max-h-[90vh] overflow-y-auto relative">
+            <button onclick="closeUploadModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="space-y-1">
+                <h3 id="upload-modal-title" class="text-xl font-extrabold text-slate-800">Upload & Tambah Media Baru</h3>
+                <p class="text-xs text-slate-500">Dukung multiple file upload & penyimpanan tautan eksternal.</p>
+            </div>
+
+            <!-- Upload Type Switcher -->
+            <div class="flex rounded-xl bg-pink-100 p-1 text-xs font-bold">
+                <button id="tab-btn-file" onclick="setUploadType('file')" class="flex-1 py-2 rounded-lg bg-white text-pink-600 shadow">
+                    <i class="fa-solid fa-file-arrow-up"></i> UPLOAD FILE (MULTIPLE)
+                </button>
+                <button id="tab-btn-link" onclick="setUploadType('link')" class="flex-1 py-2 rounded-lg text-slate-600 hover:text-pink-600">
+                    <i class="fa-solid fa-link"></i> TAMBAHKAN LINK
+                </button>
+            </div>
+
+            <form id="media-form" onsubmit="handleSaveMedia(event)" class="space-y-4 text-xs font-semibold">
+                <input type="hidden" id="edit-media-id" value="">
+
+                <!-- Common Metadata Fields -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="sm:col-span-2">
+                        <label class="block text-slate-700 mb-1">Judul Media Pembelajaran *</label>
+                        <input type="text" id="form-title" required placeholder="mis: Modul Ajar IPAS Kelas IV Bab 2" class="w-full px-3.5 py-2.5 rounded-xl border border-pink-200 focus:border-pink-500 outline-none text-xs">
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-700 mb-1">Kategori *</label>
+                        <select id="form-category" required class="w-full px-3.5 py-2.5 rounded-xl border border-pink-200 focus:border-pink-500 outline-none text-xs">
+                            <option value="Modul Ajar">📚 Modul Ajar</option>
+                            <option value="PPT Interaktif">🖥️ PPT Interaktif</option>
+                            <option value="Aktivitas Pembelajaran">🎯 Aktivitas Pembelajaran</option>
+                            <option value="Ide Permainan Edukatif">🎮 Ide Permainan Edukatif</option>
+                            <option value="Lain-Lain">📂 Lain-Lain</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-700 mb-1">Mata Pelajaran *</label>
+                        <select id="form-subject" required class="w-full px-3.5 py-2.5 rounded-xl border border-pink-200 focus:border-pink-500 outline-none text-xs">
+                            <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                            <option value="Matematika">Matematika</option>
+                            <option value="IPAS">IPAS</option>
+                            <option value="Pendidikan Pancasila">Pendidikan Pancasila</option>
+                            <option value="Seni">Seni</option>
+                            <option value="PJOK">PJOK</option>
+                            <option value="Bahasa Inggris">Bahasa Inggris</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-700 mb-1">Kelas SD *</label>
+                        <select id="form-grade" required class="w-full px-3.5 py-2.5 rounded-xl border border-pink-200 focus:border-pink-500 outline-none text-xs">
+                            <option value="I">Kelas I</option>
+                            <option value="II">Kelas II</option>
+                            <option value="III">Kelas III</option>
+                            <option value="IV" selected>Kelas IV</option>
+                            <option value="V">Kelas V</option>
+                            <option value="VI">Kelas VI</option>
+                            <option value="Umum">Semua Kelas / Umum</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-slate-700 mb-1">Jenjang Pendidikan</label>
+                        <select id="form-level" class="w-full px-3.5 py-2.5 rounded-xl border border-pink-200 focus:border-pink-500 outline-none text-xs">
+                            <option value="SD">Sekolah Dasar (SD/MI)</option>
+                            <option value="Umum">Umum / Pendidik</option>
+                        </select>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-slate-700 mb-1">Kata Kunci (Keywords dipisah koma)</label>
+                        <input type="text" id="form-keywords" placeholder="mis: IPAS, ekosistem, kelas 4, modul pdf" class="w-full px-3.5 py-2.5 rounded-xl border border-pink-200 focus:border-pink-500 outline-none text-xs">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-slate-700 mb-1">Deskripsi Singkat *</label>
+                        <textarea id="form-desc" rows="3" required placeholder="Jelaskan secara singkat isi media pembelajaran ini..." class="w-full px-3.5 py-2.5 rounded-xl border border-pink-200 focus:border-pink-500 outline-none text-xs"></textarea>
+                    </div>
+                </div>
+
+                <!-- SECTION A: MULTIPLE FILE UPLOAD INPUT -->
+                <div id="upload-section-file" class="space-y-3 pt-2 border-t border-pink-100">
+                    <label class="block text-slate-700">Pilih File (Bisa Pilih Banyak File) *</label>
+                    <div class="border-2 border-dashed border-pink-300 rounded-2xl p-6 text-center hover:bg-pink-50/50 transition cursor-pointer relative" onclick="document.getElementById('file-picker').click()">
+                        <input type="file" id="file-picker" multiple onchange="handleFileSelection(event)" class="hidden" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.webp,.mp4,.zip">
+                        <i class="fa-solid fa-cloud-arrow-up text-3xl text-pink-400 mb-2"></i>
+                        <p class="text-xs font-bold text-slate-700">Klik untuk memilih file dari perangkat Anda</p>
+                        <p class="text-[10px] text-slate-400 mt-1">Mendukung: PDF, DOCX, PPTX, XLSX, MP4, PNG, JPG, dan ZIP</p>
+                    </div>
+
+                    <!-- Selected Files Queue Display -->
+                    <div id="file-queue-container" class="hidden space-y-2">
+                        <div class="flex justify-between items-center text-xs font-bold text-slate-700">
+                            <span>Daftar File yang Diunggah (<span id="queue-count">0</span>):</span>
+                            <span class="text-[10px] text-pink-600 font-semibold">Siap diunggah</span>
+                        </div>
+                        <div id="file-queue-list" class="max-h-40 overflow-y-auto space-y-1.5 p-2 bg-slate-50 rounded-xl border border-slate-200">
+                            <!-- File list items -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION B: EXTERNAL LINK INPUT -->
+                <div id="upload-section-link" class="hidden space-y-3 pt-2 border-t border-pink-100">
+                    <div>
+                        <label class="block text-slate-700 mb-1">URL / Link Eksternal *</label>
+                        <input type="url" id="form-external-url" placeholder="https://drive.google.com/..., https://canva.com/..., https://youtube.com/..." class="w-full px-3.5 py-2.5 rounded-xl border border-pink-200 focus:border-pink-500 outline-none text-xs">
+                        <p class="text-[10px] text-slate-400 mt-1">Mendukung Google Drive, Canva, YouTube, Google Forms, Website Pendidikan.</p>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-pink-100 flex justify-end gap-2">
+                    <button type="button" onclick="closeUploadModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-600 font-bold hover:bg-slate-200 transition">Batal</button>
+                    <button type="submit" id="save-submit-btn" class="px-6 py-2.5 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-bold shadow transition">SIMPAN MEDIA</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // INITIAL DATABASE STATE (LOCAL FALLBACK UNTIL MONGODB IS SEEDED)
+        // ==========================================
+        const INITIAL_MEDIA_DATA = [
+            {
+                id: 'med-001',
+                title: 'Modul Ajar IPAS Kelas 4 - Perubahan Bentuk Energi',
+                slug: 'modul-ajar-ipas-kelas-4-perubahan-bentuk-energi',
+                category: 'Modul Ajar',
+                subject: 'IPAS',
+                grade: 'IV',
+                educationLevel: 'SD',
+                fileType: 'PDF',
+                fileName: 'Modul_IPAS_Kelas4_Energi.pdf',
+                fileSize: '3.4 MB',
+                fileUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+                externalUrl: '',
+                description: 'Modul ajar Kurikulum Merdeka Fase B Kelas IV topik perubahan bentuk energi dilengkapi LKPD interaktif dan lembar refleksi peserta didik.',
+                keywords: ['IPAS', 'Kelas 4', 'Energi', 'Kurikulum Merdeka'],
+                downloadCount: 142,
+                createdAt: '2026-03-10T08:30:00.000Z'
+            },
+            {
+                id: 'med-002',
+                title: 'PPT Interaktif Matematika - Penjumlahan & Pengurangan Pecahan',
+                slug: 'ppt-interaktif-matematika-penjumlahan-pecahan',
+                category: 'PPT Interaktif',
+                subject: 'Matematika',
+                grade: 'V',
+                educationLevel: 'SD',
+                fileType: 'PPTX',
+                fileName: 'PPT_Matematika_Pecahan_Kelas5.pptx',
+                fileSize: '12.8 MB',
+                fileUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+                externalUrl: '',
+                description: 'PowerPoint pembelajaran disertai animasi menarik, tombol navigasi kuis pilihan ganda interaktif, dan pembahasan pembahasan soal.',
+                keywords: ['Matematika', 'Pecahan', 'Kelas 5', 'PPT Animasi'],
+                downloadCount: 98,
+                createdAt: '2026-03-12T10:15:00.000Z'
+            },
+            {
+                id: 'med-003',
+                title: 'Lembar Kerja & Aktivitas Kelompok - Pancasila dalam Kehidupan',
+                slug: 'lkpd-aktivitas-kelompok-pancasila',
+                category: 'Aktivitas Pembelajaran',
+                subject: 'Pendidikan Pancasila',
+                grade: 'III',
+                educationLevel: 'SD',
+                fileType: 'DOCX',
+                fileName: 'LKPD_Aktivitas_Pancasila_Kel3.docx',
+                fileSize: '1.2 MB',
+                fileUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+                externalUrl: '',
+                description: 'LKPD aktivitas kelompok diskusi penerapan nilai-nilai Pancasila di lingkungan sekolah dan rumah dilengkapi rubrik penilaian.',
+                keywords: ['Pancasila', 'Kelas 3', 'LKPD', 'Kerja Kelompok'],
+                downloadCount: 76,
+                createdAt: '2026-03-14T14:20:00.000Z'
+            },
+            {
+                id: 'med-004',
+                title: 'Game Kartu Edukatif - Bingo Kata Sunda & Indonesia',
+                slug: 'game-kartu-edukatif-bingo-kata',
+                category: 'Ide Permainan Edukatif',
+                subject: 'Bahasa Indonesia',
+                grade: 'II',
+                educationLevel: 'SD',
+                fileType: 'PDF',
+                fileName: 'Kartu_Bingo_Kata_Bahasa.pdf',
+                fileSize: '4.1 MB',
+                fileUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+                externalUrl: '',
+                description: 'Template printout permainan Bingo Kata untuk mengasah kosakata Bahasa Indonesia siswa kelas rendah secara menyenangkan.',
+                keywords: ['Game Bahasa', 'Kartu Edukasi', 'Kelas 2', 'Bingo'],
+                downloadCount: 210,
+                createdAt: '2026-03-15T11:00:00.000Z'
+            },
+            {
+                id: 'med-005',
+                title: 'Template Canva - Poster Literasi Reading Challenge Class',
+                slug: 'template-canva-poster-literasi-kelas',
+                category: 'Lain-Lain',
+                subject: 'Seni',
+                grade: 'Umum',
+                educationLevel: 'Umum',
+                fileType: 'LINK',
+                fileName: '',
+                fileUrl: '',
+                externalUrl: 'https://canva.com',
+                description: 'Link template Canva siap edit untuk membuat poster pojok baca dan jurnal harian baca siswa SD.',
+                keywords: ['Canva', 'Literasi', 'Poster', 'Pojok Baca'],
+                downloadCount: 185,
+                createdAt: '2026-03-18T09:00:00.000Z'
+            },
+            {
+                id: 'med-006',
+                title: 'Video Ice Breaking & Tepuk Semangat Pembelajaran SD',
+                slug: 'video-ice-breaking-tepuk-semangat-sd',
+                category: 'Aktivitas Pembelajaran',
+                subject: 'PJOK',
+                grade: 'I',
+                educationLevel: 'SD',
+                fileType: 'MP4',
+                fileName: 'Video_Ice_Breaking_SD.mp4',
+                fileSize: '24.5 MB',
+                fileUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+                externalUrl: '',
+                description: 'Video variasi ice breaking dan gerak lagu untuk mengawali pembelajaran agar siswa kelas 1 lebih bersemangat.',
+                keywords: ['Ice Breaking', 'Video SD', 'PJOK', 'Kelas 1'],
+                downloadCount: 320,
+                createdAt: '2026-03-19T16:45:00.000Z'
+            }
+        ];
+
+        // Global State Variables
+        let mediaList = [];
+        let isEditorLoggedIn = false;
+        let currentPage = 1;
+        const ITEMS_PER_PAGE = 6;
+        let selectedFilesQueue = [];
+        let currentUploadType = 'file';
+        let needsRemoteSeed = false;
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadDatabase();
+            updateStats();
+            applyFilters();
+            await checkSession();
+        });
+
+        async function loadDatabase() {
+            try {
+                const response = await fetch('/api/media', { cache: 'no-store' });
+                if (!response.ok) throw new Error(`API media gagal (${response.status})`);
+                const remoteItems = await response.json();
+                if (Array.isArray(remoteItems) && remoteItems.length > 0) {
+                    mediaList = remoteItems;
+                    localStorage.setItem('lumbung_edukatif_media', JSON.stringify(mediaList));
+                    return;
+                }
+                needsRemoteSeed = true;
+            } catch (error) {
+                console.warn('MongoDB belum tersedia, memakai data lokal sementara.', error);
+            }
+
+            const stored = localStorage.getItem('lumbung_edukatif_media');
+            if (stored) {
+                try {
+                    mediaList = JSON.parse(stored);
+                } catch (e) {
+                    mediaList = INITIAL_MEDIA_DATA;
+                }
+            } else {
+                mediaList = INITIAL_MEDIA_DATA;
+                localStorage.setItem('lumbung_edukatif_media', JSON.stringify(mediaList));
+            }
+        }
+
+        async function saveDatabase() {
+            localStorage.setItem('lumbung_edukatif_media', JSON.stringify(mediaList));
+            updateStats();
+
+            try {
+                const response = await fetch('/api/media', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(mediaList)
+                });
+                if (!response.ok) throw new Error(`API media gagal (${response.status})`);
+                needsRemoteSeed = false;
+            } catch (error) {
+                console.warn('Perubahan tersimpan lokal; MongoDB belum dapat diperbarui.', error);
+            }
+        }
+
+        // Open the Gmail app on phones, with Gmail Web as a fallback.
+        function openGmailApp(event) {
+            event.preventDefault();
+
+            const webUrl = event.currentTarget.href;
+            const recipient = 'peserta.38239@ppg.belajar.id';
+            const isAppleTouchDevice = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || isAppleTouchDevice;
+
+            if (!isMobile) {
+                window.open(webUrl, '_blank', 'noopener,noreferrer');
+                return;
+            }
+
+            let appOpened = false;
+            const encodedRecipient = encodeURIComponent(recipient);
+            const isAndroid = /Android/i.test(navigator.userAgent);
+            const deepLink = isAndroid
+                ? `intent://co?to=${encodedRecipient}#Intent;scheme=googlegmail;package=com.google.android.gm;S.browser_fallback_url=${encodeURIComponent(webUrl)};end`
+                : `googlegmail://co?to=${encodedRecipient}`;
+            const fallbackTimer = window.setTimeout(() => {
+                if (!appOpened) window.location.href = webUrl;
+            }, 1800);
+
+            const handleVisibilityChange = () => {
+                if (document.hidden) {
+                    appOpened = true;
+                    window.clearTimeout(fallbackTimer);
+                    document.removeEventListener('visibilitychange', handleVisibilityChange);
+                }
+            };
+
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            window.location.href = deepLink;
+        }
+
+        // NAVIGATION LOGIC
+        function showSection(section) {
+            document.getElementById('sec-home').classList.add('hidden');
+            document.getElementById('sec-admin').classList.add('hidden');
+            document.getElementById('sec-tentang').classList.add('hidden');
+
+            if (section === 'home') {
+                document.getElementById('sec-home').classList.remove('hidden');
+            } else if (section === 'admin') {
+                if (!isEditorLoggedIn) {
+                    toggleAuthModal();
+                    return;
+                }
+                document.getElementById('sec-admin').classList.remove('hidden');
+                renderAdminTable();
+            } else if (section === 'tentang') {
+                document.getElementById('sec-tentang').classList.remove('hidden');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // AUTHENTICATION SYSTEM
+        async function checkSession() {
+            try {
+                const response = await fetch('/api/auth', { cache: 'no-store' });
+                const result = await response.json();
+                if (response.ok && result.authenticated) {
+                    isEditorLoggedIn = true;
+                    sessionStorage.setItem('lumbung_editor_session', 'true');
+                    updateAuthUI();
+                    if (needsRemoteSeed) await saveDatabase();
+                    return;
+                }
+            } catch (error) {
+                console.warn('Sesi editor belum dapat diperiksa.', error);
+            }
+
+            sessionStorage.removeItem('lumbung_editor_session');
+            isEditorLoggedIn = false;
+            updateAuthUI();
+        }
+
+        function toggleAuthModal() {
+            const modal = document.getElementById('modal-auth');
+            modal.classList.toggle('hidden');
+            document.getElementById('auth-error').classList.add('hidden');
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('auth-user').value;
+            const p = document.getElementById('auth-pass').value;
+
+            try {
+                const response = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p })
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || 'Login gagal.');
+
+                isEditorLoggedIn = true;
+                sessionStorage.setItem('lumbung_editor_session', 'true');
+                updateAuthUI();
+                if (needsRemoteSeed) await saveDatabase();
+                toggleAuthModal();
+                showSection('admin');
+            } catch (error) {
+                const err = document.getElementById('auth-error');
+                err.innerText = error.message || 'Login gagal.';
+                err.classList.remove('hidden');
+            }
+        }
+
+        async function logoutEditor() {
+            try { await fetch('/api/auth', { method: 'DELETE' }); } catch (error) { console.warn(error); }
+            isEditorLoggedIn = false;
+            sessionStorage.removeItem('lumbung_editor_session');
+            updateAuthUI();
+            showSection('home');
+        }
+
+        function updateAuthUI() {
+            const btnText = document.getElementById('auth-btn-text');
+            const mobileBtn = document.getElementById('mobile-auth-btn');
+
+            if (isEditorLoggedIn) {
+                btnText.innerText = 'DASHBOARD EDITOR';
+                mobileBtn.innerText = '⚙️ DASHBOARD EDITOR';
+            } else {
+                btnText.innerText = 'LOGIN EDITOR';
+                mobileBtn.innerText = '🔐 LOGIN EDITOR';
+            }
+        }
+
+        // FILTER & SEARCH SYSTEM
+        function handleSearchInput(e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        }
+
+        function filterByCategory(cat) {
+            showSection('home');
+            document.getElementById('filter-category').value = cat;
+            applyFilters();
+            document.getElementById('explore').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('filter-category').value = 'ALL';
+            document.getElementById('filter-level').value = 'ALL';
+            document.getElementById('filter-grade').value = 'ALL';
+            document.getElementById('filter-subject').value = 'ALL';
+            document.getElementById('filter-type').value = 'ALL';
+            document.getElementById('sort-order').value = 'newest';
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            const cat = document.getElementById('filter-category').value;
+            const level = document.getElementById('filter-level').value;
+            const grade = document.getElementById('filter-grade').value;
+            const subject = document.getElementById('filter-subject').value;
+            const type = document.getElementById('filter-type').value;
+            const sort = document.getElementById('sort-order').value;
+
+            let filtered = mediaList.filter(item => {
+                // Query Search Match
+                const matchQuery = !query || 
+                    item.title.toLowerCase().includes(query) ||
+                    item.description.toLowerCase().includes(query) ||
+                    item.subject.toLowerCase().includes(query) ||
+                    item.keywords.some(k => k.toLowerCase().includes(query));
+
+                const matchCat = (cat === 'ALL' || item.category === cat);
+                const matchLevel = (level === 'ALL' || item.educationLevel === level);
+                const matchGrade = (grade === 'ALL' || item.grade === grade);
+                const matchSubject = (subject === 'ALL' || item.subject === subject);
+                const matchType = (type === 'ALL' || item.fileType === type || (type === 'IMAGE' && ['JPG','JPEG','PNG','WEBP'].includes(item.fileType)));
+
+                return matchQuery && matchCat && matchLevel && matchGrade && matchSubject && matchType;
+            });
+
+            // Sorting
+            filtered.sort((a, b) => {
+                if (sort === 'newest') return new Date(b.createdAt) - new Date(a.createdAt);
+                if (sort === 'oldest') return new Date(a.createdAt) - new Date(b.createdAt);
+                if (sort === 'downloads') return b.downloadCount - a.downloadCount;
+                if (sort === 'az') return a.title.localeCompare(b.title);
+                if (sort === 'za') return b.title.localeCompare(a.title);
+                return 0;
+            });
+
+            document.getElementById('results-count').innerText = filtered.length;
+            renderGrid(filtered);
+        }
+
+        function renderGrid(data) {
+            const grid = document.getElementById('media-grid');
+            const emptyState = document.getElementById('empty-state');
+            const pagination = document.getElementById('pagination-controls');
+
+            grid.innerHTML = '';
+
+            if (data.length === 0) {
+                emptyState.classList.remove('hidden');
+                pagination.innerHTML = '';
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            // Pagination calculation
+            const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
+            if (currentPage > totalPages) currentPage = 1;
+
+            const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+            const pageData = data.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+
+            pageData.forEach(item => {
+                grid.appendChild(createMediaCard(item));
+            });
+
+            // Render Pagination buttons
+            pagination.innerHTML = '';
+            if (totalPages > 1) {
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = `w-9 h-9 rounded-xl font-bold text-xs transition ${i === currentPage ? 'bg-pink-500 text-white shadow' : 'bg-white text-slate-700 hover:bg-pink-100 border border-pink-200'}`;
+                    btn.innerText = i;
+                    btn.onclick = () => {
+                        currentPage = i;
+                        renderGrid(data);
+                        document.getElementById('explore').scrollIntoView({ behavior: 'smooth' });
+                    };
+                    pagination.appendChild(btn);
+                }
+            }
+        }
+
+        function createMediaCard(item) {
+            const card = document.createElement('div');
+            card.className = 'glass-card rounded-2xl p-5 hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300 flex flex-col justify-between border border-pink-200/80 group bg-white/90';
+
+            const fileIcon = getFileBadgeIcon(item.fileType);
+            const formattedDate = new Date(item.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+
+            card.innerHTML = `
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold tracking-wide uppercase bg-pink-100 text-pink-700">
+                            ${item.category}
+                        </span>
+                        <span class="text-xs font-bold text-slate-500 flex items-center gap-1">
+                            ${fileIcon} ${item.fileType}
+                        </span>
+                    </div>
+
+                    <h3 class="font-bold text-slate-800 text-base leading-snug group-hover:text-pink-600 transition line-clamp-2">
+                        ${escapeHtml(item.title)}
+                    </h3>
+
+                    <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                        ${escapeHtml(item.description)}
+                    </p>
+
+                    <div class="flex flex-wrap gap-1.5 pt-1">
+                        <span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-100 text-[10px] font-semibold">
+                            📖 ${item.subject}
+                        </span>
+                        <span class="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 border border-purple-100 text-[10px] font-semibold">
+                            🏫 Kelas ${item.grade}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="pt-4 mt-4 border-t border-pink-100 flex items-center justify-between text-xs text-slate-500">
+                    <span class="flex items-center gap-1 font-semibold text-[11px]">
+                        <i class="fa-solid fa-download text-pink-400"></i> ${item.downloadCount}x
+                    </span>
+                    
+                    <button onclick="openDetailModal('${item.id}')" class="px-3.5 py-1.5 bg-pink-500 hover:bg-pink-600 text-white rounded-xl font-bold text-xs shadow transition flex items-center gap-1">
+                        LIHAT DETAIL <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+            `;
+            return card;
+        }
+
+        // DETAIL MODAL & DOWNLOAD LOGIC
+        function openDetailModal(id) {
+            const item = mediaList.find(m => m.id === id);
+            if (!item) return;
+
+            const modal = document.getElementById('modal-detail');
+            const content = document.getElementById('detail-content');
+
+            const fileIcon = getFileBadgeIcon(item.fileType);
+            const formattedDate = new Date(item.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+            let previewHtml = '';
+            if (item.fileType === 'PDF') {
+                previewHtml = `
+                    <div class="w-full h-64 bg-slate-100 rounded-2xl flex flex-col items-center justify-center border border-slate-200">
+                        <i class="fa-solid fa-file-pdf text-5xl text-rose-500 mb-2"></i>
+                        <span class="text-xs text-slate-600 font-bold">Preview Modul Dokument PDF</span>
+                        <span class="text-[10px] text-slate-400">${item.fileName} (${item.fileSize})</span>
+                    </div>`;
+            } else if (item.fileType === 'MP4') {
+                previewHtml = `
+                    <video controls class="w-full h-64 bg-black rounded-2xl">
+                        <source src="${item.fileUrl}" type="video/mp4">
+                        Browser Anda tidak mendukung preview video.
+                    </video>`;
+            } else if (['JPG','PNG','WEBP','JPEG'].includes(item.fileType)) {
+                previewHtml = `
+                    <div class="w-full h-64 bg-slate-50 rounded-2xl flex items-center justify-center overflow-hidden border border-slate-200">
+                        <img src="${item.fileUrl}" alt="Preview" class="max-h-full object-contain">
+                    </div>`;
+            } else {
+                previewHtml = `
+                    <div class="w-full p-6 bg-pink-50/60 rounded-2xl border border-pink-100 text-center space-y-2">
+                        <span class="text-4xl">${fileIcon}</span>
+                        <h4 class="font-bold text-slate-700 text-sm">Media Berformat ${item.fileType}</h4>
+                        <p class="text-xs text-slate-500 max-w-sm mx-auto">Pratinjau langsung tidak tersedia untuk format file ini. Silakan klik tombol aksi di bawah untuk mengunduh atau membuka sumber.</p>
+                    </div>`;
+            }
+
+            const actionBtn = item.externalUrl ? `
+                <a href="${item.externalUrl}" target="_blank" onclick="incrementDownload('${item.id}')" class="w-full py-3.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white rounded-2xl font-bold text-sm shadow-lg text-center flex items-center justify-center gap-2">
+                    🔗 BUKA LINK EKSTERNAL <i class="fa-solid fa-up-right-from-square text-xs"></i>
+                </a>
+            ` : `
+                <button onclick="downloadMediaFile('${item.id}')" class="w-full py-3.5 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-2xl font-bold text-sm shadow-lg flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-circle-down"></i> UNDUH MEDIA PEMBELAJARAN (${item.fileSize || 'FILE'})
+                </button>
+            `;
+
+            content.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 rounded-xl bg-pink-100 text-pink-700 font-extrabold text-xs">${item.category}</span>
+                        <span class="px-3 py-1 rounded-xl bg-purple-100 text-purple-700 font-bold text-xs">Mapel: ${item.subject}</span>
+                        <span class="px-3 py-1 rounded-xl bg-amber-100 text-amber-700 font-bold text-xs">Kelas ${item.grade}</span>
+                    </div>
+
+                    <h2 class="text-2xl font-black text-slate-800">${escapeHtml(item.title)}</h2>
+
+                    <div class="flex items-center gap-4 text-xs text-slate-500 border-b border-pink-100 pb-3">
+                        <span><i class="fa-solid fa-calendar-day text-pink-400"></i> ${formattedDate}</span>
+                        <span><i class="fa-solid fa-download text-pink-400"></i> ${item.downloadCount} Unduhan</span>
+                    </div>
+
+                    ${previewHtml}
+
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-slate-800 text-sm">Deskripsi Media</h4>
+                        <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">${escapeHtml(item.description)}</p>
+                    </div>
+
+                    ${item.keywords && item.keywords.length ? `
+                        <div class="flex flex-wrap gap-1.5 pt-2">
+                            ${item.keywords.map(k => `<span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-semibold">#${k}</span>`).join('')}
+                        </div>
+                    ` : ''}
+
+                    <div class="pt-4">
+                        ${actionBtn}
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('modal-detail').classList.add('hidden');
+        }
+
+        function downloadMediaFile(id) {
+            const item = mediaList.find(m => m.id === id);
+            if (!item) return;
+
+            incrementDownload(id);
+
+            // Blob publik dapat diunduh langsung tanpa melewati batas response serverless.
+            const a = document.createElement('a');
+            if (item.fileUrl && item.fileUrl.includes('.blob.vercel-storage.com/')) {
+                const blobUrl = new URL(item.fileUrl);
+                blobUrl.searchParams.set('download', '1');
+                a.href = blobUrl.toString();
+            } else {
+                a.href = `/api/download?id=${encodeURIComponent(item.id)}`;
+            }
+            a.download = item.fileName || 'media-edukatif';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function incrementDownload(id) {
+            const item = mediaList.find(m => m.id === id);
+            if (item) {
+                item.downloadCount += 1;
+                localStorage.setItem('lumbung_edukatif_media', JSON.stringify(mediaList));
+                updateStats();
+                fetch(`/api/media?id=${encodeURIComponent(id)}&action=download`, { method: 'PATCH' })
+                    .catch(error => console.warn('Jumlah unduhan belum tersimpan ke MongoDB.', error));
+                applyFilters();
+            }
+        }
+
+        // CRUD MEDIA & MULTIPLE FILE UPLOAD
+        function openUploadModal(editId = null) {
+            if (!isEditorLoggedIn) {
+                toggleAuthModal();
+                return;
+            }
+
+            const modal = document.getElementById('modal-upload');
+            const form = document.getElementById('media-form');
+            form.reset();
+            selectedFilesQueue = [];
+            renderFileQueue();
+
+            if (editId) {
+                const item = mediaList.find(m => m.id === editId);
+                if (item) {
+                    document.getElementById('edit-media-id').value = item.id;
+                    document.getElementById('upload-modal-title').innerText = 'Edit Media Pembelajaran';
+                    document.getElementById('form-title').value = item.title;
+                    document.getElementById('form-category').value = item.category;
+                    document.getElementById('form-subject').value = item.subject;
+                    document.getElementById('form-grade').value = item.grade;
+                    document.getElementById('form-level').value = item.educationLevel || 'SD';
+                    document.getElementById('form-keywords').value = (item.keywords || []).join(', ');
+                    document.getElementById('form-desc').value = item.description;
+
+                    if (item.externalUrl) {
+                        setUploadType('link');
+                        document.getElementById('form-external-url').value = item.externalUrl;
+                    } else {
+                        setUploadType('file');
+                    }
+                }
+            } else {
+                document.getElementById('edit-media-id').value = '';
+                document.getElementById('upload-modal-title').innerText = 'Upload & Tambah Media Baru';
+                setUploadType('file');
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('modal-upload').classList.add('hidden');
+        }
+
+        function setUploadType(type) {
+            currentUploadType = type;
+            const btnFile = document.getElementById('tab-btn-file');
+            const btnLink = document.getElementById('tab-btn-link');
+            const secFile = document.getElementById('upload-section-file');
+            const secLink = document.getElementById('upload-section-link');
+
+            if (type === 'file') {
+                btnFile.className = 'flex-1 py-2 rounded-lg bg-white text-pink-600 shadow';
+                btnLink.className = 'flex-1 py-2 rounded-lg text-slate-600 hover:text-pink-600';
+                secFile.classList.remove('hidden');
+                secLink.classList.add('hidden');
+            } else {
+                btnLink.className = 'flex-1 py-2 rounded-lg bg-white text-pink-600 shadow';
+                btnFile.className = 'flex-1 py-2 rounded-lg text-slate-600 hover:text-pink-600';
+                secLink.classList.remove('hidden');
+                secFile.classList.add('hidden');
+            }
+        }
+
+        function handleFileSelection(e) {
+            const files = Array.from(e.target.files);
+            files.forEach(f => {
+                selectedFilesQueue.push({
+                    file: f,
+                    name: f.name,
+                    size: (f.size / (1024 * 1024)).toFixed(2) + ' MB',
+                    status: 'Menunggu',
+                    progress: 0
+                });
+            });
+            renderFileQueue();
+        }
+
+        function renderFileQueue() {
+            const container = document.getElementById('file-queue-container');
+            const list = document.getElementById('file-queue-list');
+            const count = document.getElementById('queue-count');
+
+            if (selectedFilesQueue.length === 0) {
+                container.classList.add('hidden');
+                list.innerHTML = '';
+                return;
+            }
+
+            container.classList.remove('hidden');
+            count.innerText = selectedFilesQueue.length;
+            list.innerHTML = '';
+
+            selectedFilesQueue.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between p-2 bg-white rounded-lg border border-pink-100 text-xs';
+                const progress = Math.max(0, Math.min(100, Number(item.progress) || 0));
+                const statusClass = item.status === 'Selesai'
+                    ? 'bg-emerald-100 text-emerald-700'
+                    : item.status === 'Gagal'
+                        ? 'bg-rose-100 text-rose-700'
+                        : 'bg-amber-100 text-amber-700';
+                div.innerHTML = `
+                    <div class="min-w-0 flex-1 pr-3">
+                        <div class="flex items-center gap-2 truncate">
+                        <i class="fa-solid fa-file-lines text-pink-500"></i>
+                        <span class="font-bold text-slate-700 truncate">${escapeHtml(item.name)}</span>
+                        <span class="text-[10px] text-slate-400">(${item.size})</span>
+                        </div>
+                        ${item.status !== 'Menunggu' ? `
+                            <div class="flex items-center gap-2 mt-1">
+                                <div class="h-1.5 flex-1 overflow-hidden rounded-full bg-pink-100">
+                                    <div class="h-full rounded-full bg-pink-500 transition-all duration-300" style="width: ${progress}%"></div>
+                                </div>
+                                <span class="text-[10px] font-bold text-pink-600 w-8 text-right">${progress}%</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${statusClass}">${item.status}</span>
+                        <button type="button" onclick="removeQueueItem(${index})" class="text-rose-500 hover:text-rose-700 font-bold">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function removeQueueItem(index) {
+            selectedFilesQueue.splice(index, 1);
+            renderFileQueue();
+        }
+
+        async function uploadMediaFile(file) {
+            const { upload } = await import('https://esm.sh/@vercel/blob@1.1.1/client');
+            const queuedItem = selectedFilesQueue.find((item) => item.file === file);
+            return upload(file.name, file, {
+                access: 'public',
+                handleUploadUrl: '/api/upload',
+                multipart: true,
+                onUploadProgress: (event) => {
+                    if (!queuedItem) return;
+                    const percentage = Math.round(event.percentage || 0);
+                    queuedItem.progress = percentage;
+                    queuedItem.status = `Mengunggah ${percentage}%`;
+                    renderFileQueue();
+                }
+            });
+        }
+
+        async function handleSaveMedia(e) {
+            e.preventDefault();
+
+            const editId = document.getElementById('edit-media-id').value;
+            const title = document.getElementById('form-title').value.trim();
+            const category = document.getElementById('form-category').value;
+            const subject = document.getElementById('form-subject').value;
+            const grade = document.getElementById('form-grade').value;
+            const level = document.getElementById('form-level').value;
+            const keywords = document.getElementById('form-keywords').value.split(',').map(k => k.trim()).filter(Boolean);
+            const desc = document.getElementById('form-desc').value.trim();
+
+            if (editId) {
+                // UPDATE
+                const item = mediaList.find(m => m.id === editId);
+                if (item) {
+                    item.title = title;
+                    item.category = category;
+                    item.subject = subject;
+                    item.grade = grade;
+                    item.educationLevel = level;
+                    item.keywords = keywords;
+                    item.description = desc;
+
+                    if (currentUploadType === 'link') {
+                        item.externalUrl = document.getElementById('form-external-url').value;
+                        item.fileType = 'LINK';
+                    }
+                    saveDatabase();
+                    alert('Media berhasil diperbarui!');
+                }
+            } else {
+                // CREATE NEW (Support Multiple Files upload batching)
+                if (currentUploadType === 'file' && selectedFilesQueue.length > 0) {
+                    const newItems = [];
+                    try {
+                        for (let idx = 0; idx < selectedFilesQueue.length; idx += 1) {
+                            const qItem = selectedFilesQueue[idx];
+                            qItem.status = 'Mengunggah 0%';
+                            qItem.progress = 0;
+                            renderFileQueue();
+                            const uploaded = await uploadMediaFile(qItem.file);
+                            qItem.status = 'Selesai';
+                            qItem.progress = 100;
+                        const ext = qItem.name.split('.').pop().toUpperCase();
+                        const newMedia = {
+                            id: 'med-' + Date.now() + '-' + idx,
+                            title: selectedFilesQueue.length > 1 ? `${title} (${idx + 1})` : title,
+                            slug: createSlug(title) + '-' + idx,
+                            category: category,
+                            subject: subject,
+                            grade: grade,
+                            educationLevel: level,
+                            fileType: ext,
+                            fileName: qItem.name,
+                            fileSize: qItem.size,
+                            fileUrl: uploaded.url,
+                            externalUrl: '',
+                            description: desc,
+                            keywords: keywords,
+                            downloadCount: 0,
+                            createdAt: new Date().toISOString()
+                        };
+                            newItems.push(newMedia);
+                        }
+                    } catch (error) {
+                        const failedItem = selectedFilesQueue.find((item) => item.status.startsWith('Mengunggah'));
+                        if (failedItem) {
+                            failedItem.status = 'Gagal';
+                            renderFileQueue();
+                        }
+                        alert(error.message || 'Upload file gagal.');
+                        return;
+                    }
+                    mediaList.unshift(...newItems.reverse());
+                    await saveDatabase();
+                    alert(`Berhasil menambahkan ${selectedFilesQueue.length} file ke Lumbung Edukatif!`);
+                } else if (currentUploadType === 'link') {
+                    const extUrl = document.getElementById('form-external-url').value;
+                    const newMedia = {
+                        id: 'med-' + Date.now(),
+                        title: title,
+                        slug: createSlug(title),
+                        category: category,
+                        subject: subject,
+                        grade: grade,
+                        educationLevel: level,
+                        fileType: 'LINK',
+                        fileName: '',
+                        fileSize: '',
+                        fileUrl: '',
+                        externalUrl: extUrl,
+                        description: desc,
+                        keywords: keywords,
+                        downloadCount: 0,
+                        createdAt: new Date().toISOString()
+                    };
+                    mediaList.unshift(newMedia);
+                    saveDatabase();
+                    alert('Tautan media pembelajaran berhasil disimpan!');
+                } else {
+                    alert('Harap pilih minimal 1 file atau masukkan URL!');
+                    return;
+                }
+            }
+
+            closeUploadModal();
+            applyFilters();
+            renderAdminTable();
+        }
+
+        function deleteMedia(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus media ini dari database?')) {
+                mediaList = mediaList.filter(m => m.id !== id);
+                saveDatabase();
+                applyFilters();
+                renderAdminTable();
+            }
+        }
+
+        // ADMIN TABLE RENDER
+        function renderAdminTable() {
+            const body = document.getElementById('admin-table-body');
+            const query = (document.getElementById('admin-search')?.value || '').toLowerCase();
+            body.innerHTML = '';
+
+            const filtered = mediaList.filter(m => !query || m.title.toLowerCase().includes(query) || m.category.toLowerCase().includes(query));
+
+            filtered.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-pink-50/50 transition';
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-slate-800 max-w-xs">
+                        <div class="truncate">${escapeHtml(item.title)}</div>
+                        <div class="text-[10px] font-normal text-slate-400">${item.fileName || item.externalUrl || '-'}</div>
+                    </td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded bg-pink-100 text-pink-700 font-bold">${item.category}</span></td>
+                    <td class="p-3 font-medium text-slate-600">${item.subject} (Kelas ${item.grade})</td>
+                    <td class="p-3"><span class="font-bold text-slate-700">${item.fileType}</span></td>
+                    <td class="p-3 text-center font-bold text-pink-600">${item.downloadCount}</td>
+                    <td class="p-3 text-center space-x-1">
+                        <button onclick="openUploadModal('${item.id}')" class="px-2.5 py-1 bg-amber-100 text-amber-800 hover:bg-amber-200 rounded-lg font-bold text-[11px]">Edit</button>
+                        <button onclick="deleteMedia('${item.id}')" class="px-2.5 py-1 bg-rose-100 text-rose-700 hover:bg-rose-200 rounded-lg font-bold text-[11px]">Hapus</button>
+                    </td>
+                `;
+                body.appendChild(tr);
+            });
+        }
+
+        // STATS COUNTER UPDATE
+        function updateStats() {
+            const total = mediaList.length;
+            const modul = mediaList.filter(m => m.category === 'Modul Ajar').length;
+            const ppt = mediaList.filter(m => m.category === 'PPT Interaktif').length;
+            const aktiv = mediaList.filter(m => m.category === 'Aktivitas Pembelajaran').length;
+            const game = mediaList.filter(m => m.category === 'Ide Permainan Edukatif').length;
+            const lain = mediaList.filter(m => m.category === 'Lain-Lain').length;
+            const downloads = mediaList.reduce((acc, curr) => acc + (curr.downloadCount || 0), 0);
+
+            document.getElementById('hero-stat-total').innerText = total;
+            document.getElementById('hero-stat-downloads').innerText = downloads;
+
+            document.getElementById('stat-total').innerText = total;
+            document.getElementById('stat-modul').innerText = modul;
+            document.getElementById('stat-ppt').innerText = ppt;
+            document.getElementById('stat-aktivitas').innerText = aktiv;
+            document.getElementById('stat-game').innerText = game;
+            document.getElementById('stat-lain').innerText = lain;
+            document.getElementById('stat-downloads').innerText = downloads;
+        }
+
+        // UTILITY HELPERS
+        function getFileBadgeIcon(type) {
+            switch (type) {
+                case 'PDF': return '📕';
+                case 'DOCX':
+                case 'DOC': return '📘';
+                case 'PPTX':
+                case 'PPT': return '📊';
+                case 'XLSX':
+                case 'XLS': return '📗';
+                case 'MP4': return '🎥';
+                case 'JPG':
+                case 'PNG':
+                case 'WEBP': return '🖼️';
+                case 'ZIP': return '📦';
+                case 'LINK': return '🔗';
+                default: return '📄';
+            }
+        }
+
+        function createSlug(text) {
+            return text.toLowerCase()
+                .replace(/[^\w ]+/g, '')
+                .replace(/ +/g, '-');
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, "&amp;")
+                      .replace(/</g, "&lt;")
+                      .replace(/>/g, "&gt;")
+                      .replace(/"/g, "&quot;")
+                      .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
