@@ -1,0 +1,10 @@
+# Rahasia lokal dan konfigurasi Vercel pada komputer
+.env
+.env.*
+!.env.example
+.vercel
+
+# Berkas sistem/editor
+.DS_Store
+Thumbs.db
+*.log
