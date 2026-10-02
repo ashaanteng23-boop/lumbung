@@ -749,7 +749,7 @@
                 <div id="upload-section-file" class="space-y-3 pt-2 border-t border-pink-100">
                     <label class="block text-slate-700">Pilih File (Bisa Pilih Banyak File) *</label>
                     <div class="border-2 border-dashed border-pink-300 rounded-2xl p-6 text-center hover:bg-pink-50/50 transition cursor-pointer relative" onclick="document.getElementById('file-picker').click()">
-                        <input type="file" id="file-picker" multiple onchange="handleFileSelection(event)" class="hidden" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.webp,.mp4,.zip">
+                        <input type="file" id="file-picker" multiple onchange="handleFileSelection(event)" class="hidden" accept=".pdf,.doc,.docx,.ppt,.pptx,.pptm,.pps,.ppsx,.xls,.xlsx,.png,.jpg,.jpeg,.webp,.mp4,.zip">
                         <i class="fa-solid fa-cloud-arrow-up text-3xl text-pink-400 mb-2"></i>
                         <p class="text-xs font-bold text-slate-700">Klik untuk memilih file dari perangkat Anda</p>
                         <p class="text-[10px] text-slate-400 mt-1">Mendukung: PDF, DOCX, PPTX, XLSX, MP4, PNG, JPG, dan ZIP</p>
@@ -907,6 +907,45 @@
         let currentUploadType = 'file';
         let needsRemoteSeed = false;
 
+        const CATEGORY_ALIASES = {
+            'modul ajar': 'Modul Ajar',
+            'modular': 'Modul Ajar',
+            'ppt interaktif': 'PPT Interaktif',
+            'ppt': 'PPT Interaktif',
+            'aktivitas pembelajaran': 'Aktivitas Pembelajaran',
+            'ide permainan edukatif': 'Ide Permainan Edukatif',
+            'lain-lain': 'Lain-Lain',
+            'lainnya': 'Lain-Lain'
+        };
+
+        function normalizeCategory(value) {
+            const category = String(value || '').trim();
+            return CATEGORY_ALIASES[category.toLowerCase()] || category;
+        }
+
+        function normalizeFileType(value) {
+            return String(value || '').trim().toUpperCase();
+        }
+
+        function normalizeMediaItem(item) {
+            return {
+                ...item,
+                category: normalizeCategory(item.category),
+                fileType: normalizeFileType(item.fileType),
+                title: String(item.title || '').trim(),
+                description: String(item.description || ''),
+                subject: String(item.subject || '').trim(),
+                keywords: Array.isArray(item.keywords) ? item.keywords : [],
+                downloadCount: Number(item.downloadCount) || 0
+            };
+        }
+
+        async function readApiResponse(response) {
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(result.error || `Permintaan gagal (${response.status})`);
+            return result;
+        }
+
         // Initialize App
         window.addEventListener('DOMContentLoaded', async () => {
             await loadDatabase();
@@ -921,7 +960,7 @@
                 if (!response.ok) throw new Error(`API media gagal (${response.status})`);
                 const remoteItems = await response.json();
                 if (Array.isArray(remoteItems) && remoteItems.length > 0) {
-                    mediaList = remoteItems;
+                    mediaList = remoteItems.map(normalizeMediaItem);
                     localStorage.setItem('lumbung_edukatif_media', JSON.stringify(mediaList));
                     return;
                 }
@@ -933,12 +972,13 @@
             const stored = localStorage.getItem('lumbung_edukatif_media');
             if (stored) {
                 try {
-                    mediaList = JSON.parse(stored);
+                    const localItems = JSON.parse(stored);
+                    mediaList = Array.isArray(localItems) ? localItems.map(normalizeMediaItem) : INITIAL_MEDIA_DATA.map(normalizeMediaItem);
                 } catch (e) {
-                    mediaList = INITIAL_MEDIA_DATA;
+                    mediaList = INITIAL_MEDIA_DATA.map(normalizeMediaItem);
                 }
             } else {
-                mediaList = INITIAL_MEDIA_DATA;
+                mediaList = INITIAL_MEDIA_DATA.map(normalizeMediaItem);
                 localStorage.setItem('lumbung_edukatif_media', JSON.stringify(mediaList));
             }
         }
@@ -947,17 +987,28 @@
             localStorage.setItem('lumbung_edukatif_media', JSON.stringify(mediaList));
             updateStats();
 
-            try {
-                const response = await fetch('/api/media', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(mediaList)
-                });
-                if (!response.ok) throw new Error(`API media gagal (${response.status})`);
-                needsRemoteSeed = false;
-            } catch (error) {
-                console.warn('Perubahan tersimpan lokal; MongoDB belum dapat diperbarui.', error);
-            }
+            const response = await fetch('/api/media', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(mediaList)
+            });
+            await readApiResponse(response);
+            needsRemoteSeed = false;
+        }
+
+        async function saveMediaItem(item) {
+            const normalizedItem = normalizeMediaItem(item);
+            const response = await fetch('/api/media', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(normalizedItem)
+            });
+            return normalizeMediaItem(await readApiResponse(response));
+        }
+
+        function cacheMediaList() {
+            localStorage.setItem('lumbung_edukatif_media', JSON.stringify(mediaList));
+            updateStats();
         }
 
         // Open the Gmail app on phones, with Gmail Web as a fallback.
@@ -1032,7 +1083,13 @@
                     isEditorLoggedIn = true;
                     sessionStorage.setItem('lumbung_editor_session', 'true');
                     updateAuthUI();
-                    if (needsRemoteSeed) await saveDatabase();
+                    if (needsRemoteSeed) {
+                        try {
+                            await saveDatabase();
+                        } catch (error) {
+                            console.warn('Data awal belum dapat disimpan ke MongoDB.', error);
+                        }
+                    }
                     return;
                 }
             } catch (error) {
@@ -1067,7 +1124,13 @@
                 isEditorLoggedIn = true;
                 sessionStorage.setItem('lumbung_editor_session', 'true');
                 updateAuthUI();
-                if (needsRemoteSeed) await saveDatabase();
+                if (needsRemoteSeed) {
+                    try {
+                        await saveDatabase();
+                    } catch (error) {
+                        console.warn('Data awal belum dapat disimpan ke MongoDB.', error);
+                    }
+                }
                 toggleAuthModal();
                 showSection('admin');
             } catch (error) {
@@ -1107,7 +1170,12 @@
 
         function filterByCategory(cat) {
             showSection('home');
-            document.getElementById('filter-category').value = cat;
+            document.getElementById('search-input').value = '';
+            document.getElementById('filter-category').value = normalizeCategory(cat);
+            document.getElementById('filter-level').value = 'ALL';
+            document.getElementById('filter-grade').value = 'ALL';
+            document.getElementById('filter-subject').value = 'ALL';
+            document.getElementById('filter-type').value = 'ALL';
             applyFilters();
             document.getElementById('explore').scrollIntoView({ behavior: 'smooth' });
         }
@@ -1124,6 +1192,7 @@
         }
 
         function applyFilters() {
+            currentPage = 1;
             const query = document.getElementById('search-input').value.toLowerCase().trim();
             const cat = document.getElementById('filter-category').value;
             const level = document.getElementById('filter-level').value;
@@ -1133,18 +1202,27 @@
             const sort = document.getElementById('sort-order').value;
 
             let filtered = mediaList.filter(item => {
+                const itemCategory = normalizeCategory(item.category);
+                const itemType = normalizeFileType(item.fileType);
                 // Query Search Match
                 const matchQuery = !query || 
-                    item.title.toLowerCase().includes(query) ||
-                    item.description.toLowerCase().includes(query) ||
-                    item.subject.toLowerCase().includes(query) ||
-                    item.keywords.some(k => k.toLowerCase().includes(query));
+                    String(item.title || '').toLowerCase().includes(query) ||
+                    String(item.description || '').toLowerCase().includes(query) ||
+                    String(item.subject || '').toLowerCase().includes(query) ||
+                    (item.keywords || []).some(k => String(k).toLowerCase().includes(query));
 
-                const matchCat = (cat === 'ALL' || item.category === cat);
+                const matchCat = (cat === 'ALL' || itemCategory === normalizeCategory(cat));
                 const matchLevel = (level === 'ALL' || item.educationLevel === level);
                 const matchGrade = (grade === 'ALL' || item.grade === grade);
                 const matchSubject = (subject === 'ALL' || item.subject === subject);
-                const matchType = (type === 'ALL' || item.fileType === type || (type === 'IMAGE' && ['JPG','JPEG','PNG','WEBP'].includes(item.fileType)));
+                const typeGroups = {
+                    DOCX: ['DOC', 'DOCX'],
+                    PPTX: ['PPT', 'PPTX', 'PPTM', 'PPS', 'PPSX'],
+                    XLSX: ['XLS', 'XLSX'],
+                    IMAGE: ['JPG', 'JPEG', 'PNG', 'WEBP'],
+                    VIDEO: ['MP4']
+                };
+                const matchType = type === 'ALL' || itemType === type || (typeGroups[type] || []).includes(itemType);
 
                 return matchQuery && matchCat && matchLevel && matchGrade && matchSubject && matchType;
             });
@@ -1534,55 +1612,64 @@
         async function handleSaveMedia(e) {
             e.preventDefault();
 
+            const submitButton = document.getElementById('save-submit-btn');
             const editId = document.getElementById('edit-media-id').value;
             const title = document.getElementById('form-title').value.trim();
-            const category = document.getElementById('form-category').value;
+            const category = normalizeCategory(document.getElementById('form-category').value);
             const subject = document.getElementById('form-subject').value;
             const grade = document.getElementById('form-grade').value;
             const level = document.getElementById('form-level').value;
             const keywords = document.getElementById('form-keywords').value.split(',').map(k => k.trim()).filter(Boolean);
             const desc = document.getElementById('form-desc').value.trim();
 
-            if (editId) {
-                // UPDATE
-                const item = mediaList.find(m => m.id === editId);
-                if (item) {
-                    item.title = title;
-                    item.category = category;
-                    item.subject = subject;
-                    item.grade = grade;
-                    item.educationLevel = level;
-                    item.keywords = keywords;
-                    item.description = desc;
+            const createdItems = [];
+            submitButton.disabled = true;
+            submitButton.innerText = 'MENYIMPAN...';
+
+            try {
+                if (editId) {
+                    const itemIndex = mediaList.findIndex(m => m.id === editId);
+                    if (itemIndex === -1) throw new Error('Media yang akan diedit tidak ditemukan.');
+
+                    const updatedItem = {
+                        ...mediaList[itemIndex],
+                        title,
+                        category,
+                        subject,
+                        grade,
+                        educationLevel: level,
+                        keywords,
+                        description: desc
+                    };
 
                     if (currentUploadType === 'link') {
-                        item.externalUrl = document.getElementById('form-external-url').value;
-                        item.fileType = 'LINK';
+                        updatedItem.externalUrl = document.getElementById('form-external-url').value.trim();
+                        updatedItem.fileType = 'LINK';
                     }
-                    saveDatabase();
-                    alert('Media berhasil diperbarui!');
-                }
-            } else {
-                // CREATE NEW (Support Multiple Files upload batching)
-                if (currentUploadType === 'file' && selectedFilesQueue.length > 0) {
-                    const newItems = [];
-                    try {
-                        for (let idx = 0; idx < selectedFilesQueue.length; idx += 1) {
-                            const qItem = selectedFilesQueue[idx];
-                            qItem.status = 'Mengunggah 0%';
-                            qItem.progress = 0;
-                            renderFileQueue();
-                            const uploaded = await uploadMediaFile(qItem.file);
-                            qItem.status = 'Selesai';
-                            qItem.progress = 100;
-                        const ext = qItem.name.split('.').pop().toUpperCase();
+
+                    mediaList[itemIndex] = await saveMediaItem(updatedItem);
+                    cacheMediaList();
+                    alert('Media berhasil diperbarui dan tersimpan di database!');
+                } else if (currentUploadType === 'file' && selectedFilesQueue.length > 0) {
+                    for (let idx = 0; idx < selectedFilesQueue.length; idx += 1) {
+                        const qItem = selectedFilesQueue[idx];
+                        qItem.status = 'Mengunggah 0%';
+                        qItem.progress = 0;
+                        renderFileQueue();
+
+                        const uploaded = await uploadMediaFile(qItem.file);
+                        const ext = normalizeFileType(qItem.name.split('.').pop());
+                        qItem.status = 'Menyimpan';
+                        qItem.progress = 100;
+                        renderFileQueue();
+
                         const newMedia = {
-                            id: 'med-' + Date.now() + '-' + idx,
+                            id: createMediaId(idx),
                             title: selectedFilesQueue.length > 1 ? `${title} (${idx + 1})` : title,
                             slug: createSlug(title) + '-' + idx,
-                            category: category,
-                            subject: subject,
-                            grade: grade,
+                            category,
+                            subject,
+                            grade,
                             educationLevel: level,
                             fileType: ext,
                             fileName: qItem.name,
@@ -1590,33 +1677,30 @@
                             fileUrl: uploaded.url,
                             externalUrl: '',
                             description: desc,
-                            keywords: keywords,
+                            keywords,
                             downloadCount: 0,
                             createdAt: new Date().toISOString()
                         };
-                            newItems.push(newMedia);
-                        }
-                    } catch (error) {
-                        const failedItem = selectedFilesQueue.find((item) => item.status.startsWith('Mengunggah'));
-                        if (failedItem) {
-                            failedItem.status = 'Gagal';
-                            renderFileQueue();
-                        }
-                        alert(error.message || 'Upload file gagal.');
-                        return;
+
+                        createdItems.push(await saveMediaItem(newMedia));
+                        qItem.status = 'Selesai';
+                        renderFileQueue();
                     }
-                    mediaList.unshift(...newItems.reverse());
-                    await saveDatabase();
-                    alert(`Berhasil menambahkan ${selectedFilesQueue.length} file ke Lumbung Edukatif!`);
+
+                    mediaList.unshift(...createdItems.slice().reverse());
+                    cacheMediaList();
+                    alert(`Berhasil mengunggah dan menyimpan ${createdItems.length} file!`);
                 } else if (currentUploadType === 'link') {
-                    const extUrl = document.getElementById('form-external-url').value;
+                    const extUrl = document.getElementById('form-external-url').value.trim();
+                    if (!extUrl) throw new Error('URL / link eksternal wajib diisi.');
+
                     const newMedia = {
-                        id: 'med-' + Date.now(),
-                        title: title,
+                        id: createMediaId(),
+                        title,
                         slug: createSlug(title),
-                        category: category,
-                        subject: subject,
-                        grade: grade,
+                        category,
+                        subject,
+                        grade,
                         educationLevel: level,
                         fileType: 'LINK',
                         fileName: '',
@@ -1624,30 +1708,57 @@
                         fileUrl: '',
                         externalUrl: extUrl,
                         description: desc,
-                        keywords: keywords,
+                        keywords,
                         downloadCount: 0,
                         createdAt: new Date().toISOString()
                     };
-                    mediaList.unshift(newMedia);
-                    saveDatabase();
-                    alert('Tautan media pembelajaran berhasil disimpan!');
+
+                    mediaList.unshift(await saveMediaItem(newMedia));
+                    cacheMediaList();
+                    alert('Tautan media berhasil disimpan di database!');
                 } else {
-                    alert('Harap pilih minimal 1 file atau masukkan URL!');
-                    return;
+                    throw new Error('Harap pilih minimal 1 file atau masukkan URL!');
                 }
-            }
 
-            closeUploadModal();
-            applyFilters();
-            renderAdminTable();
-        }
-
-        function deleteMedia(id) {
-            if (confirm('Apakah Anda yakin ingin menghapus media ini dari database?')) {
-                mediaList = mediaList.filter(m => m.id !== id);
-                saveDatabase();
+                closeUploadModal();
                 applyFilters();
                 renderAdminTable();
+            } catch (error) {
+                const failedItem = selectedFilesQueue.find((item) =>
+                    item.status.startsWith('Mengunggah') || item.status === 'Menyimpan'
+                );
+                if (failedItem) failedItem.status = 'Gagal';
+                renderFileQueue();
+
+                if (createdItems.length > 0) {
+                    mediaList.unshift(...createdItems.slice().reverse());
+                    cacheMediaList();
+                    applyFilters();
+                    renderAdminTable();
+                }
+
+                const partialMessage = createdItems.length > 0
+                    ? ` ${createdItems.length} file sebelumnya sudah tersimpan.`
+                    : '';
+                alert((error.message || 'Media gagal disimpan ke database.') + partialMessage);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerText = 'SIMPAN MEDIA';
+            }
+        }
+
+        async function deleteMedia(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus media ini dari database?')) {
+                try {
+                    const response = await fetch(`/api/media?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+                    await readApiResponse(response);
+                    mediaList = mediaList.filter(m => m.id !== id);
+                    cacheMediaList();
+                    applyFilters();
+                    renderAdminTable();
+                } catch (error) {
+                    alert(error.message || 'Media gagal dihapus dari database.');
+                }
             }
         }
 
@@ -1657,7 +1768,11 @@
             const query = (document.getElementById('admin-search')?.value || '').toLowerCase();
             body.innerHTML = '';
 
-            const filtered = mediaList.filter(m => !query || m.title.toLowerCase().includes(query) || m.category.toLowerCase().includes(query));
+            const filtered = mediaList.filter(m =>
+                !query ||
+                String(m.title || '').toLowerCase().includes(query) ||
+                normalizeCategory(m.category).toLowerCase().includes(query)
+            );
 
             filtered.forEach(item => {
                 const tr = document.createElement('tr');
@@ -1683,11 +1798,11 @@
         // STATS COUNTER UPDATE
         function updateStats() {
             const total = mediaList.length;
-            const modul = mediaList.filter(m => m.category === 'Modul Ajar').length;
-            const ppt = mediaList.filter(m => m.category === 'PPT Interaktif').length;
-            const aktiv = mediaList.filter(m => m.category === 'Aktivitas Pembelajaran').length;
-            const game = mediaList.filter(m => m.category === 'Ide Permainan Edukatif').length;
-            const lain = mediaList.filter(m => m.category === 'Lain-Lain').length;
+            const modul = mediaList.filter(m => normalizeCategory(m.category) === 'Modul Ajar').length;
+            const ppt = mediaList.filter(m => normalizeCategory(m.category) === 'PPT Interaktif').length;
+            const aktiv = mediaList.filter(m => normalizeCategory(m.category) === 'Aktivitas Pembelajaran').length;
+            const game = mediaList.filter(m => normalizeCategory(m.category) === 'Ide Permainan Edukatif').length;
+            const lain = mediaList.filter(m => normalizeCategory(m.category) === 'Lain-Lain').length;
             const downloads = mediaList.reduce((acc, curr) => acc + (curr.downloadCount || 0), 0);
 
             document.getElementById('hero-stat-total').innerText = total;
@@ -1709,6 +1824,9 @@
                 case 'DOCX':
                 case 'DOC': return '📘';
                 case 'PPTX':
+                case 'PPTM':
+                case 'PPS':
+                case 'PPSX':
                 case 'PPT': return '📊';
                 case 'XLSX':
                 case 'XLS': return '📗';
@@ -1726,6 +1844,13 @@
             return text.toLowerCase()
                 .replace(/[^\w ]+/g, '')
                 .replace(/ +/g, '-');
+        }
+
+        function createMediaId(index = 0) {
+            const uniquePart = globalThis.crypto?.randomUUID
+                ? globalThis.crypto.randomUUID()
+                : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+            return `med-${uniquePart}-${index}`;
         }
 
         function escapeHtml(str) {
