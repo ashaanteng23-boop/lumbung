@@ -7,6 +7,17 @@ const FIELDS = [
   'keywords', 'downloadCount', 'createdAt'
 ];
 
+const CATEGORY_ALIASES = new Map([
+  ['modul ajar', 'Modul Ajar'],
+  ['modular', 'Modul Ajar'],
+  ['ppt interaktif', 'PPT Interaktif'],
+  ['ppt', 'PPT Interaktif'],
+  ['aktivitas pembelajaran', 'Aktivitas Pembelajaran'],
+  ['ide permainan edukatif', 'Ide Permainan Edukatif'],
+  ['lain-lain', 'Lain-Lain'],
+  ['lainnya', 'Lain-Lain']
+]);
+
 function json(res, status, payload) {
   res.status(status).setHeader('Content-Type', 'application/json; charset=utf-8');
   return res.end(JSON.stringify(payload));
@@ -21,15 +32,27 @@ function bodyOf(req) {
 }
 
 function sanitize(item = {}) {
-  return FIELDS.reduce((result, field) => {
+  const result = FIELDS.reduce((result, field) => {
     if (item[field] !== undefined) result[field] = item[field];
     return result;
   }, {});
+
+  if (typeof result.category === 'string') {
+    const category = result.category.trim();
+    result.category = CATEGORY_ALIASES.get(category.toLowerCase()) || category;
+  }
+  if (typeof result.fileType === 'string') result.fileType = result.fileType.trim().toUpperCase();
+  if (typeof result.title === 'string') result.title = result.title.trim();
+  if (typeof result.fileName === 'string') result.fileName = result.fileName.trim();
+  if (Array.isArray(result.keywords)) {
+    result.keywords = result.keywords.map((keyword) => String(keyword).trim()).filter(Boolean);
+  }
+
+  return result;
 }
 
 function publicItem(item) {
-  const { _id, ...result } = item;
-  return result;
+  return sanitize(item);
 }
 
 function requireEditor(req, res) {
@@ -61,9 +84,18 @@ module.exports = async function handler(req, res) {
       const items = bodyOf(req);
       if (!Array.isArray(items)) return json(res, 400, { error: 'Body harus berupa array media.' });
 
-      await collection.deleteMany({});
       const documents = items.map(sanitize).filter((item) => item.id);
-      if (documents.length) await collection.insertMany(documents);
+      if (documents.length) {
+        await collection.bulkWrite(
+          documents.map((item) => ({
+            updateOne: {
+              filter: { id: item.id },
+              update: { $set: item },
+              upsert: true
+            }
+          }))
+        );
+      }
       return json(res, 200, { saved: documents.length });
     }
 
