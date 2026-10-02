@@ -34,6 +34,9 @@ module.exports = async function handler(req, res) {
           'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
           'application/vnd.ms-powerpoint',
           'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+          'application/vnd.ms-powerpoint.presentation.macroEnabled.12',
+          'application/vnd.ms-powerpoint.slideshow.macroEnabled.12',
+          'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
           'application/vnd.ms-excel',
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           'application/zip', 'video/mp4', 'image/jpeg', 'image/png', 'image/webp'
